@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/milaniumkz/bazarkz",
+  "repositoryId": 1422161105,
+  "defaultBranch": "main",
+  "environment": "production",
+  "requiredReviewer": "milaniumkz",
+  "project": "ba-za-r-k-z-np0vyz",
+  "workloadIdentityProvider": "projects/541902317139/locations/global/workloadIdentityPools/bazarkz-github/providers/github",
+  "deploymentServiceAccount": "bazarkz-github-deploy@ba-za-r-k-z-np0vyz.iam.gserviceaccount.com",
+  "backups": {
+    "recoveryStorageAndArtifacts": "gs://ba-za-r-k-z-np0vyz-private-backups/",
+    "firestoreExport": "gs://ba-za-r-k-z-np0vyz-private-backups-asia/firestore/2026-10-16",
+    "firestoreDocumentsExported": 128,
+    "storageObjectsCopied": 53,
+    "authAccountsExported": 18,
+    "publicAccessPrevention": "enforced",
+    "uniformBucketLevelAccess": true,
+    "versioning": true
+  },
+  "verification": {
+    "sourceChecks": "https://github.com/milaniumkz/bazarkz/actions/runs/38905013951",
+    "federatedCloudAccess": "https://github.com/milaniumkz/bazarkz/actions/runs/38904466211",
+    "policyDeployment": "https://github.com/milaniumkz/bazarkz/actions/runs/38904859065",
+    "signedAndroidBuild": "https://github.com/milaniumkz/bazarkz/actions/runs/38904471626",
+    "signedIosBuild": "https://github.com/milaniumkz/bazarkz/actions/runs/38905015770"
+  }
+}
