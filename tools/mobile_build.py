@@ -42,6 +42,9 @@ def main():
         raise ValueError('Invalid version/build number')
     source = ROOT / ('bazar_kz' if app == 'buyer' else 'bazarkz_seller')
     TEMP.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if platform == 'ios':
+        # Match the tested CocoaPods setup; current Flutter defaults to SPM.
+        run('flutter', 'config', '--no-enable-swift-package-manager')
     run('flutter', 'pub', 'get', cwd=source)
     if platform == 'android':
         signing = json.loads(os.environ['ANDROID_SIGNING'])
