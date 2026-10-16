@@ -46,11 +46,11 @@ jobs:
           java-version: '17'
       - name: Restore signing material only inside approved runner
         env:
-          ANDROID_SIGNING: ${{ inputs.app == 'buyer' && secrets.ANDROID_BUYER_SIGNING || secrets.ANDROID_SELLER_SIGNING }}
-          APPLE_SIGNING: ${{ secrets.APPLE_SIGNING }}
-          APPLE_BUYER_PROFILE: ${{ secrets.APPLE_BUYER_PROFILE }}
-          APPLE_SELLER_PROFILE: ${{ secrets.APPLE_SELLER_PROFILE }}
-          APPLE_NOTIFICATION_PROFILE: ${{ secrets.APPLE_NOTIFICATION_PROFILE }}
+          ANDROID_SIGNING: ${{ inputs.platform == 'android' && (inputs.app == 'buyer' && secrets.ANDROID_BUYER_SIGNING || secrets.ANDROID_SELLER_SIGNING) || '' }}
+          APPLE_SIGNING: ${{ inputs.platform == 'ios' && secrets.APPLE_SIGNING || '' }}
+          APPLE_BUYER_PROFILE: ${{ inputs.platform == 'ios' && inputs.app == 'buyer' && secrets.APPLE_BUYER_PROFILE || '' }}
+          APPLE_SELLER_PROFILE: ${{ inputs.platform == 'ios' && inputs.app == 'seller' && secrets.APPLE_SELLER_PROFILE || '' }}
+          APPLE_NOTIFICATION_PROFILE: ${{ inputs.platform == 'ios' && inputs.app == 'seller' && secrets.APPLE_NOTIFICATION_PROFILE || '' }}
         run: python3 tools/mobile_build.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

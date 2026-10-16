@@ -40,6 +40,12 @@ def main():
         raise ValueError('Unsupported application/platform')
     if not re.fullmatch(r'\d+\.\d+\.\d+', version) or not re.fullmatch(r'[1-9]\d{0,8}', number):
         raise ValueError('Invalid version/build number')
+    # Native build tools may print their environment. Keep signing values only
+    # in this process's memory; never inherit them into pub, CocoaPods or Xcode.
+    material = {name: os.environ.pop(name, '') for name in (
+        'ANDROID_SIGNING', 'APPLE_SIGNING', 'APPLE_BUYER_PROFILE',
+        'APPLE_SELLER_PROFILE', 'APPLE_NOTIFICATION_PROFILE',
+    )}
     source = ROOT / ('bazar_kz' if app == 'buyer' else 'bazarkz_seller')
     TEMP.mkdir(mode=0o700, parents=True, exist_ok=True)
     if platform == 'ios':
@@ -47,7 +53,7 @@ def main():
         run('flutter', 'config', '--no-enable-swift-package-manager')
     run('flutter', 'pub', 'get', cwd=source)
     if platform == 'android':
-        signing = json.loads(os.environ['ANDROID_SIGNING'])
+        signing = json.loads(material['ANDROID_SIGNING'])
         store = TEMP / 'upload.jks'
         write_private(store, base64.b64decode(signing['keystore']))
         fields = dict(storeFile=str(store), keyAlias=signing['alias'], storePassword=signing['storePassword'], keyPassword=signing['keyPassword'])
@@ -57,7 +63,7 @@ def main():
         run('flutter', 'build', 'appbundle', '--release', '--build-name='+version, '--build-number='+number, cwd=source)
         output = list((source / 'build/app/outputs/bundle/release').glob('*.aab'))
     else:
-        signing = json.loads(os.environ['APPLE_SIGNING'])
+        signing = json.loads(material['APPLE_SIGNING'])
         p12 = TEMP / 'distribution.p12'
         keychain = TEMP / 'signing.keychain-db'
         password = secrets.token_urlsafe(32)
@@ -72,7 +78,7 @@ def main():
         profile_dir = Path.home() / 'Library/MobileDevice/Provisioning Profiles'
         profiles = ['APPLE_BUYER_PROFILE'] if app == 'buyer' else ['APPLE_SELLER_PROFILE', 'APPLE_NOTIFICATION_PROFILE']
         for name in profiles:
-            write_private(profile_dir / (name+'.mobileprovision'), base64.b64decode(os.environ[name]))
+            write_private(profile_dir / (name+'.mobileprovision'), base64.b64decode(material[name]))
         run('flutter', 'build', 'ipa', '--release', '--build-name='+version, '--build-number='+number, '--export-options-plist='+str(ROOT / ('release/ExportOptions-'+app+'.plist')), cwd=source)
         output = list((source / 'build/ios/ipa').glob('*.ipa'))
     if len(output) != 1:
