@@ -18,7 +18,7 @@
     "versioning": true
   },
   "verification": {
-    "sourceChecks": "https://github.com/milaniumkz/bazarkz/actions/runs/38905013951",
+    "sourceChecks": "https://github.com/milaniumkz/bazarkz/actions/runs/38906673915",
     "federatedCloudAccess": "https://github.com/milaniumkz/bazarkz/actions/runs/38904466211",
     "policyDeployment": "https://github.com/milaniumkz/bazarkz/actions/runs/38904859065",
     "signedAndroidBuild": "https://github.com/milaniumkz/bazarkz/actions/runs/38904471626",
