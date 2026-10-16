@@ -1,0 +1,23 @@
+title = "BazarKz public source checks"
+[extend]
+useDefault = true
+
+# Firebase mobile/web API keys identify the project and ship in every app.
+# They do not grant administrator access. Firestore/Storage rules enforce access.
+[[rules]]
+id = "gcp-api-key"
+[[rules.allowlists]]
+description = "Firebase client configuration only"
+paths = ['''^(bazar_kz|bazarkz_seller|bazarkz_controls)/(android/app/google-services\.json|lib/backend/firebase/firebase_config\.dart)$''']
+
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+description = "CocoaPods dependency checksums"
+paths = ['''^(bazar_kz|bazarkz_seller)/ios/Podfile\.lock$''']
+[[rules.allowlists]]
+description = "Firebase public client API keys only"
+condition = "AND"
+paths = ['''^(bazar_kz|bazarkz_seller|bazarkz_controls)/(android/app/google-services\.json|lib/backend/firebase/firebase_config\.dart)$''']
+regexTarget = "secret"
+regexes = ['''^AIza[0-9A-Za-z_-]{35}$''']

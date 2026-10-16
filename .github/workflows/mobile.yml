@@ -1,0 +1,63 @@
+name: Signed mobile build
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        type: choice
+        description: Application (administration is excluded)
+        options: [buyer, seller]
+        required: true
+      platform:
+        type: choice
+        description: Build platform
+        options: [android, ios]
+        required: true
+      version:
+        description: Version, for example 2.0.6
+        required: true
+        type: string
+      build:
+        description: New build number, higher than previously uploaded
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ${{ inputs.platform == 'ios' && 'macos-15' || 'ubuntu-latest' }}
+    environment: production
+    timeout-minutes: 90
+    env:
+      APP: ${{ inputs.app }}
+      PLATFORM: ${{ inputs.platform }}
+      APP_VERSION: ${{ inputs.version }}
+      BUILD_NUMBER: ${{ inputs.build }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+        with:
+          flutter-version: '3.44.1'
+          cache: true
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        if: inputs.platform == 'android'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Restore signing material only inside approved runner
+        env:
+          ANDROID_SIGNING: ${{ inputs.app == 'buyer' && secrets.ANDROID_BUYER_SIGNING || secrets.ANDROID_SELLER_SIGNING }}
+          APPLE_SIGNING: ${{ secrets.APPLE_SIGNING }}
+          APPLE_BUYER_PROFILE: ${{ secrets.APPLE_BUYER_PROFILE }}
+          APPLE_SELLER_PROFILE: ${{ secrets.APPLE_SELLER_PROFILE }}
+          APPLE_NOTIFICATION_PROFILE: ${{ secrets.APPLE_NOTIFICATION_PROFILE }}
+        run: python3 tools/mobile_build.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bazarkz-${{ inputs.app }}-${{ inputs.platform }}-${{ inputs.version }}-${{ inputs.build }}
+          path: dist/*
+          retention-days: 3
+          if-no-files-found: error
+      - name: Remove temporary signing files
+        if: always()
+        run: python3 tools/mobile_build.py --clean

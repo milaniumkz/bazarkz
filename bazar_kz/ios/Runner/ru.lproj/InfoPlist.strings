@@ -1,0 +1,2 @@
+NSCameraUsageDescription = "Для сканирования qr кодов";
+PermissionGroupNotification = "Получайте увеломление о новых акциях";

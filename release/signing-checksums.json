@@ -1,0 +1,11 @@
+{
+  "bazarkz-buyer-upload.jks": "474cbafa752a28aa0966d1d3522a1c9e763b32cf8ed0c92921fa1665f018758b",
+  "bazarkz-buyer-appstore.mobileprovision": "2357472888d253c7bcad8bdefe99f598757642d0f3d4dfaca16fefed5c557a50",
+  "apple-distribution.pem": "bd4f8f1bd473f3986a27b5e0169d953fd44008b22c2f92cca2c85a03cf052e19",
+  "bazarkz-buyer-upload.pem": "c6dc6c7d9456eac5887f8a5de3b8363a2f9257f0641bb43cbfc7e990a875fced",
+  "apple-distribution.csr": "636db222944b6bdf68bfe54bbc93386e3ceff447a8cfcbc5e75b3eba0146876b",
+  "bazarkz-ios-distribution.p12": "a2b8f6097a1cb945adf89f89ec8deb079c2a91003184959a423bb033ba55e759",
+  "bazarkz-ios-distribution.cer": "4e2732f60b48aad20ec71bd489349cd43299f620805cf2a855bc8c077210a8f4",
+  "bazarkz-seller-upload.jks": "c5e591db7d2e2bc594547db23aaa0ad2f2c542d936431c63ac27c354f9b3d638",
+  "bazarkz-seller-upload.pem": "3cd78196b8181b7bf3daf30c100a22c4511e3fbf5b4f38ae007b56fd15403148"
+}

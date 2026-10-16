@@ -1,0 +1,3 @@
+NSCameraUsageDescription = "To scan qr codes";
+NSPhotoLibraryUsageDescription = "Uploading photo";
+PermissionGroupNotification = "Receive notifications about new promotions";

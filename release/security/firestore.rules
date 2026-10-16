@@ -1,0 +1,126 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function trusted() {
+      return request.auth != null && (
+        request.auth.token.firebase.sign_in_provider == 'password' ||
+        request.auth.token.get('buyerPhoneVerified', false) == true
+      );
+    }
+    function me() { return /databases/$(database)/documents/users/$(request.auth.uid); }
+    function roleIs(role) {
+      return trusted() && exists(/databases/$(database)/documents/_accessRoles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/_accessRoles/$(request.auth.uid)).data.role == role;
+    }
+    function admin() { return roleIs('admin'); }
+    function seller() { return roleIs('seller'); }
+    function self(uid) { return trusted() && request.auth.uid == uid; }
+    function member(data) { return trusted() && me() in data.users; }
+    function acceptableText(text) {
+      return text is string && text.size() <= 4000 &&
+        !text.lower().matches('.*(порнограф|детск.{0,20}порно|купить.{0,20}наркот).*');
+    }
+    function acceptableListing(data) {
+      return acceptableText(data.get('title', '')) && acceptableText(data.get('text', ''));
+    }
+    function recipientAllows(data, index) {
+      return data.users.size() <= index ||
+        !(me() in get(data.users[index]).data.get('blocked_users', []));
+    }
+    function allowedConversation(data) {
+      return member(data) && data.users.size() <= 8 &&
+        !get(me()).data.get('blocked_users', []).hasAny(data.users) &&
+        recipientAllows(data, 0) && recipientAllows(data, 1) &&
+        recipientAllows(data, 2) && recipientAllows(data, 3) &&
+        recipientAllows(data, 4) && recipientAllows(data, 5) &&
+        recipientAllows(data, 6) && recipientAllows(data, 7);
+    }
+    match /users/{uid} {
+      allow read: if self(uid) || admin();
+      allow create: if self(uid) && request.resource.data.keys().hasOnly([
+        'uid', 'email', 'display_name', 'photo_url', 'phone_number', 'created_time', 'city'
+      ]) && request.resource.data.uid == uid;
+      allow update: if admin() || (self(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'display_name', 'photo_url', 'city', 'favorites', 'cart', 'last_active_time', 'blocked_users'
+      ]));
+      allow delete: if false;
+    }
+    match /userDirectory/{uid} { allow read: if trusted(); allow write: if false; }
+    match /{collection}/{id} {
+      allow read: if collection in ['city', 'kat', 'contact', 'soglashenie'];
+      allow write: if collection in ['city', 'kat', 'contact', 'soglashenie', 'rekviziti'] && admin();
+    }
+    match /rekviziti/{id} { allow read: if seller() || admin(); allow write: if admin(); }
+    match /shopSkidki/{id} {
+      allow read: if true;
+      allow create: if admin() || (seller() && request.resource.data.idPartner == me() && acceptableListing(request.resource.data));
+      allow update: if admin() || (seller() && resource.data.idPartner == me() && request.resource.data.idPartner == me() && acceptableListing(request.resource.data));
+      allow delete: if admin() || (seller() && resource.data.idPartner == me());
+    }
+    match /tovari/{id} {
+      allow read: if true;
+      function ownsShop(data) {
+        return seller() && data.idPartner == me() &&
+          get(data.idSale).data.idPartner == me();
+      }
+      allow create: if admin() || (ownsShop(request.resource.data) && acceptableListing(request.resource.data));
+      allow update: if admin() || (ownsShop(resource.data) && ownsShop(request.resource.data) && acceptableListing(request.resource.data));
+      allow delete: if admin() || ownsShop(resource.data);
+    }
+    match /cart/{id} {
+      allow read, delete: if trusted() && (resource.data.idUsers == me() || admin());
+      allow create: if trusted() && request.resource.data.idUsers == me() &&
+        request.resource.data.cols is int && request.resource.data.cols > 0 &&
+        request.resource.data.idPartner == get(request.resource.data.idTovar).data.idPartner;
+      allow update: if trusted() && resource.data.idUsers == me() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cols']) &&
+        request.resource.data.cols is int && request.resource.data.cols > 0;
+    }
+    match /order/{id} {
+      allow read: if trusted() && (resource.data.idUser == me() || admin());
+      allow create: if trusted() && request.resource.data.idUser == me() && request.resource.data.status == 0 && request.resource.data.summa >= 0;
+      allow update, delete: if admin();
+    }
+    match /history/{id} {
+      allow read: if trusted() && (resource.data.user == me() || admin());
+      allow create: if trusted() && request.resource.data.user == me();
+      allow update, delete: if admin();
+    }
+    match /orderPayment/{id} {
+      allow read: if trusted() && (resource.data.idUser == me() || admin());
+      allow create: if seller() && request.resource.data.idUser == me() && request.resource.data.summa > 0;
+      allow update, delete: if admin();
+    }
+    match /chats/{id} {
+      allow read: if member(resource.data) || admin();
+      allow create: if allowedConversation(request.resource.data);
+      allow update: if admin() || (member(resource.data) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'last_message', 'last_message_time', 'last_message_sent_by', 'last_message_seen_by'
+        ])) || (member(resource.data) &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['users']) &&
+          ((resource.data.user_a == me() && allowedConversation(request.resource.data)) ||
+            request.resource.data.users.toSet() == resource.data.users.toSet().difference([me()].toSet())));
+      allow delete: if admin();
+    }
+    match /chat_messages/{id} {
+      allow read: if trusted() && (member(get(resource.data.chat).data) || admin());
+      allow create: if trusted() && request.resource.data.user == me() &&
+        allowedConversation(get(request.resource.data.chat).data) &&
+        acceptableText(request.resource.data.get('text', ''));
+      allow update, delete: if admin();
+    }
+    match /qr/{id} { allow read, write: if admin(); }
+    match /user/{id} { allow read, write: if admin(); }
+    match /ff_user_push_notifications/{id} { allow read, write: if admin(); }
+    match /contentReports/{id} {
+      allow create: if trusted() && request.resource.data.keys().hasOnly(['sender', 'target', 'chat', 'reason', 'createdAt']) &&
+        request.resource.data.sender == me() && request.resource.data.reason is string &&
+        request.resource.data.reason.size() > 0 && request.resource.data.reason.size() <= 1000 &&
+        member(get(request.resource.data.chat).data) &&
+        request.resource.data.target in get(request.resource.data.chat).data.users;
+      allow read, update, delete: if admin();
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

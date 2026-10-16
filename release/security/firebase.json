@@ -1,0 +1,32 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "functions": [
+    {
+      "source": "../auth-functions",
+      "codebase": "bazarkz-auth"
+    }
+  ],
+  "emulators": {
+    "firestore": {
+      "port": 8087
+    },
+    "auth": {
+      "port": 9097
+    },
+    "functions": {
+      "port": 5007
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true,
+    "storage": {
+      "port": 9197
+    }
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

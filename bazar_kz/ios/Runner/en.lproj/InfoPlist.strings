@@ -1,0 +1,2 @@
+NSCameraUsageDescription = "For scanning qr codes";
+PermissionGroupNotification = "Receive notifications about new promotions";

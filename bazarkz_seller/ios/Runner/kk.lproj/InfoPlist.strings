@@ -1,0 +1,3 @@
+NSCameraUsageDescription = "Qr кодтарын сканерлеу үшін";
+NSPhotoLibraryUsageDescription = "Фото жүктеп салынуда";
+PermissionGroupNotification = "Жаңа акциялар туралы хабарландырулар алыңыз";

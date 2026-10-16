@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>manageAppVersionAndBuildNumber</key>
+	<false/>
+	<key>method</key>
+	<string>app-store-connect</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.milanium.bazarkzseller</key>
+		<string>BazarKz Seller Push App Store 2026-10-15</string>
+		<key>com.milanium.bazarkzseller.ImageNotification</key>
+		<string>BazarKz Seller Notification App Store 2026-10-15</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>1E58F1A2852A7D8BEB52F8850F3DB722D232B248</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>teamID</key>
+	<string>Z3NZN92Y7P</string>
+	<key>uploadSymbols</key>
+	<true/>
+</dict>
+</plist>

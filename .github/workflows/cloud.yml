@@ -1,0 +1,63 @@
+name: Firebase cloud management
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Operation (production changes require approval)
+        type: choice
+        options: [status, deploy-web, deploy-functions, deploy-rules, deploy-policies]
+        default: status
+permissions:
+  contents: read
+concurrency:
+  group: firebase-production
+  cancel-in-progress: false
+jobs:
+  manage:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      OPERATION: ${{ inputs.operation }}
+      FIREBASE_PROJECT: ba-za-r-k-z-np0vyz
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
+        if: inputs.operation == 'deploy-web'
+        with:
+          flutter-version: '3.44.1'
+          cache: true
+      - name: Build both public web apps
+        if: inputs.operation == 'deploy-web'
+        run: |
+          (cd bazar_kz && flutter pub get && flutter build web --release)
+          (cd bazarkz_seller && flutter pub get && flutter build web --release)
+      - name: Test backend
+        if: inputs.operation == 'deploy-functions'
+        run: npm ci --prefix release/auth-functions && npm test --prefix release/auth-functions
+      - name: Authenticate without a persistent Google key
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+          project_id: ba-za-r-k-z-np0vyz
+      - run: npm install --global firebase-tools@14.22.0
+      - name: Execute selected operation
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$OPERATION" in
+            status) firebase hosting:sites:list --project "$FIREBASE_PROJECT" ;;
+            deploy-web) firebase deploy --config firebase.publish.json --only hosting --project "$FIREBASE_PROJECT" --non-interactive ;;
+            deploy-functions) firebase deploy --config release/auth-functions/firebase.json --only functions:bazarkz-auth --project "$FIREBASE_PROJECT" --non-interactive ;;
+            deploy-rules) firebase deploy --config release/security/firebase.json --only firestore:rules,storage --project "$FIREBASE_PROJECT" --non-interactive ;;
+            deploy-policies) firebase deploy --config release/hosting/firebase.json --only hosting --project "$FIREBASE_PROJECT" --non-interactive ;;
+            *) exit 2 ;;
+          esac

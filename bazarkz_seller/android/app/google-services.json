@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "541902317139",
+    "project_id": "ba-za-r-k-z-np0vyz",
+    "storage_bucket": "ba-za-r-k-z-np0vyz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541902317139:android:2a6967c8fa8e52f62288a6",
+        "android_client_info": {
+          "package_name": "com.milanium.bazarControls"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk9neEPlzn_wbMbs333nwKqYtiZnq0jGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541902317139:android:a7884664f8633cc52288a6",
+        "android_client_info": {
+          "package_name": "com.milanium.bazarkz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk9neEPlzn_wbMbs333nwKqYtiZnq0jGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541902317139:android:01e83e191b6020422288a6",
+        "android_client_info": {
+          "package_name": "com.milanium.bazarkzseller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk9neEPlzn_wbMbs333nwKqYtiZnq0jGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
