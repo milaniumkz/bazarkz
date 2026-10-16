@@ -54,7 +54,7 @@ npm ci --prefix release/auth-functions
 npm test --prefix release/auth-functions
 npm ci --prefix release/security
 cd release/security
-npx firebase-tools@14.22.0 emulators:exec --project demo-bazarkz-auth --only auth,firestore,functions 'npm test && node auth.integration.js'
+npx firebase-tools@14.22.0 emulators:exec --project demo-bazarkz-auth --only auth,firestore,functions,storage 'npm test && node auth.integration.js'
 ```
 
 ## Данные и восстановление
