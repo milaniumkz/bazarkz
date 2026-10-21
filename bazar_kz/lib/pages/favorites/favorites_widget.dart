@@ -129,6 +129,20 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
                                       .map((e) => e)
                                       .toList();
 
+                              if (results.isEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(32.0),
+                                  child: Text(FFLocalizations.of(context)
+                                      .getVariableText(
+                                    ruText:
+                                        'В избранном пока нет магазинов. Нажмите на сердечко в каталоге.',
+                                    kkText:
+                                        'Таңдаулы дүкендер жоқ. Каталогтағы жүрек белгісін басыңыз.',
+                                    enText:
+                                        'No favorite shops yet. Tap a heart in the catalog to save a shop.',
+                                  )),
+                                );
+                              }
                               return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 primary: false,

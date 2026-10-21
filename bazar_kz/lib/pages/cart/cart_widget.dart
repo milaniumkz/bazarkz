@@ -94,6 +94,20 @@ class _CartWidgetState extends State<CartWidget> {
                                   .map((e) => e)
                                   .toList();
 
+                          if (resultsCarts.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Text(
+                                  FFLocalizations.of(context).getVariableText(
+                                ruText:
+                                    'Корзина пуста. Добавьте товары из каталога магазина.',
+                                kkText:
+                                    'Себет бос. Дүкен каталогынан тауарларды қосыңыз.',
+                                enText:
+                                    'Your cart is empty. Add products from a shop catalog.',
+                              )),
+                            );
+                          }
                           return SingleChildScrollView(
                             primary: false,
                             controller: _model.columnController2,

@@ -25,7 +25,7 @@ class FFLocalizations {
     return locale != null && locale.isNotEmpty ? createLocale(locale) : null;
   }
 
-  String get languageCode => locale.toString();
+  String get languageCode => locale.languageCode;
   String? get languageShortCode =>
       _languagesWithShortCode.contains(locale.toString())
           ? '${locale.toString()}_short'
@@ -34,15 +34,24 @@ class FFLocalizations {
       ? languages().indexOf(languageCode)
       : 0;
 
-  String getText(String key) =>
-      (kTranslationsMap[key] ?? {})[locale.toString()] ?? '';
+  String getText(String key) {
+    final translations = kTranslationsMap[key] ?? {};
+    final translated = translations[locale.languageCode];
+    return translated != null && translated.isNotEmpty
+        ? translated
+        : translations['ru'] ?? '';
+  }
 
   String getVariableText({
     String? ruText = '',
     String? kkText = '',
     String? enText = '',
-  }) =>
-      [ruText, kkText, enText][languageIndex] ?? '';
+  }) {
+    final translated = [ruText, kkText, enText][languageIndex];
+    return translated != null && translated.isNotEmpty
+        ? translated
+        : ruText ?? '';
+  }
 
   static const Set<String> _languagesWithShortCode = {
     'ar',

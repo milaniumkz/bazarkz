@@ -147,6 +147,20 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           List<OrderRecord> listViewOrderRecordList =
                               snapshot.data!;
 
+                          if (listViewOrderRecordList.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Text(
+                                  FFLocalizations.of(context).getVariableText(
+                                ruText:
+                                    'Заказов пока нет. После оформления заказа он появится здесь.',
+                                kkText:
+                                    'Тапсырыстар жоқ. Рәсімделген тапсырыстар осында көрсетіледі.',
+                                enText:
+                                    'No orders yet. Your orders will appear here after checkout.',
+                              )),
+                            );
+                          }
                           return ListView.builder(
                             padding: EdgeInsets.zero,
                             primary: false,
