@@ -327,9 +327,11 @@ class _CartWidgetState extends State<CartWidget> {
                                                                 key: Key(
                                                                   'Keymme_${cardTovariRecord.reference.id}',
                                                                 ),
-                                                                maxCols:
-                                                                    cardTovariRecord
-                                                                        .cols,
+                                                                maxCols: cardTovariRecord
+                                                                        .hasCols()
+                                                                    ? cardTovariRecord
+                                                                        .cols
+                                                                    : 99,
                                                                 cols:
                                                                     listViewCartRecord
                                                                         .cols,
