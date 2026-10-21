@@ -26,13 +26,47 @@ class _CartWidgetState extends State<CartWidget> {
   late CartModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _totalLoading = true;
+  bool _totalError = false;
+  int _totalRequest = 0;
+
+  Future<void> _refreshCartTotal() async {
+    final request = ++_totalRequest;
+    safeSetState(() => _totalLoading = true);
+    try {
+      final profile = await UsersRecord.getDocumentOnce(currentUserReference!);
+      final carts =
+          await Future.wait(profile.cart.map(CartRecord.getDocumentOnce));
+      final amounts = await Future.wait(carts.map((cart) async {
+        final product = await TovariRecord.getDocumentOnce(cart.idTovar!);
+        return product.price * cart.cols;
+      }));
+      if (!mounted || request != _totalRequest) return;
+      FFAppState().update(() => FFAppState().summa =
+          amounts.fold<double>(0.0, (total, amount) => total + amount));
+      safeSetState(() {
+        _totalLoading = false;
+        _totalError = false;
+      });
+    } catch (_) {
+      if (!mounted || request != _totalRequest) return;
+      safeSetState(() {
+        _totalLoading = false;
+        _totalError = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'Не удалось загрузить сумму корзины. Откройте корзину повторно.'),
+      ));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => CartModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refreshCartTotal());
   }
 
   @override
@@ -299,6 +333,16 @@ class _CartWidgetState extends State<CartWidget> {
                                                                 cols:
                                                                     listViewCartRecord
                                                                         .cols,
+                                                                onChanged:
+                                                                    (count) async {
+                                                                  await listViewCartRecord
+                                                                      .reference
+                                                                      .update({
+                                                                    'cols':
+                                                                        count
+                                                                  });
+                                                                  await _refreshCartTotal();
+                                                                },
                                                               ),
                                                             ),
                                                           ],
@@ -362,16 +406,7 @@ class _CartWidgetState extends State<CartWidget> {
                                                             },
                                                           ),
                                                         });
-                                                        FFAppState()
-                                                            .summa = FFAppState()
-                                                                .summa +
-                                                            ((cardTovariRecord
-                                                                        .price *
-                                                                    listViewCartRecord
-                                                                        .cols) *
-                                                                -1);
-                                                        FFAppState()
-                                                            .update(() {});
+                                                        await _refreshCartTotal();
                                                       },
                                                       text: FFLocalizations.of(
                                                               context)
@@ -471,7 +506,11 @@ class _CartWidgetState extends State<CartWidget> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text(
-                                  '${FFAppState().summa.toString()} ₸',
+                                  _totalLoading
+                                      ? '…'
+                                      : _totalError
+                                          ? '—'
+                                          : '${FFAppState().summa.toString()} ₸',
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
@@ -494,9 +533,13 @@ class _CartWidgetState extends State<CartWidget> {
                     Padding(
                       padding: EdgeInsets.all(10.0),
                       child: FFButtonWidget(
-                        onPressed: () async {
-                          context.pushNamed(OrderWidget.routeName);
-                        },
+                        onPressed: _totalLoading ||
+                                _totalError ||
+                                FFAppState().summa <= 0
+                            ? null
+                            : () async {
+                                context.pushNamed(OrderWidget.routeName);
+                              },
                         text: FFLocalizations.of(context).getText(
                           'm887wc6b' /* Оформить заказ */,
                         ),

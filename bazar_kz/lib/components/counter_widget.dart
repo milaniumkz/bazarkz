@@ -10,10 +10,12 @@ class CounterWidget extends StatefulWidget {
     super.key,
     this.maxCols,
     required this.cols,
+    this.onChanged,
   });
 
   final int? maxCols;
   final int? cols;
+  final Future<void> Function(int)? onChanged;
 
   @override
   State<CounterWidget> createState() => _CounterWidgetState();
@@ -78,8 +80,10 @@ class _CounterWidgetState extends State<CounterWidget> {
               ),
         ),
         count: _model.countControllerValue ??= widget.cols!,
-        updateCount: (count) =>
-            safeSetState(() => _model.countControllerValue = count),
+        updateCount: (count) async {
+          safeSetState(() => _model.countControllerValue = count);
+          await widget.onChanged?.call(count);
+        },
         stepSize: 1,
         minimum: 1,
         maximum: widget.maxCols!,
