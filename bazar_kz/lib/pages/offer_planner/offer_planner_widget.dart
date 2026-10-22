@@ -407,6 +407,7 @@ class _OfferPlannerWidgetState extends State<OfferPlannerWidget> {
         backgroundColor: const Color(0xFFF2F6F4),
         appBar: AppBar(
             backgroundColor: const Color(0xFFF2F6F4),
+            foregroundColor: const Color(0xFF152E25),
             title: Text(tr('План покупок BazarKz', 'BazarKz сатып алу жоспары',
                 'BazarKz shopping planner'))),
         body: SafeArea(
