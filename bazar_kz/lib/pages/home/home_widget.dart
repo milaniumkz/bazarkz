@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
+import '/pages/offer_planner/offer_planner_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -250,7 +251,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                       size: 24.0,
                     ),
                     onPressed: () {
-                      print('IconButton pressed ...');
+                      context.pushNamed(OfferPlannerWidget.routeName);
                     },
                   ),
                 ],
@@ -271,6 +272,37 @@ class _HomeWidgetState extends State<HomeWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                      child: Card(
+                        color: const Color(0xFFE5F2EC),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(16),
+                          leading: const Icon(Icons.compare_arrows,
+                              color: Color(0xFF12664F)),
+                          title: Text(
+                              FFLocalizations.of(context).getVariableText(
+                                ruText: 'План покупок BazarKz',
+                                kkText: 'BazarKz сатып алу жоспары',
+                                enText: 'BazarKz shopping planner',
+                              ),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w700)),
+                          subtitle:
+                              Text(FFLocalizations.of(context).getVariableText(
+                            ruText:
+                                'Сравните магазины, условия и экономию в своём городе',
+                            kkText:
+                                'Өз қалаңыздағы дүкендерді, шарттар мен үнемді салыстырыңыз',
+                            enText:
+                                'Compare local shops, conditions and potential savings',
+                          )),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () =>
+                              context.pushNamed(OfferPlannerWidget.routeName),
+                        ),
+                      ),
+                    ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       controller: _model.rowController,

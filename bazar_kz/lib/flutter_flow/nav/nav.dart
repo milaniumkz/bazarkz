@@ -10,6 +10,7 @@ import '/auth/base_auth_user_provider.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 import '/index.dart';
+import '/pages/offer_planner/offer_planner_widget.dart';
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
@@ -99,6 +100,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: SelectLangWidget.routeName,
           path: SelectLangWidget.routePath,
           builder: (context, params) => SelectLangWidget(),
+        ),
+        FFRoute(
+          name: OfferPlannerWidget.routeName,
+          path: OfferPlannerWidget.routePath,
+          builder: (context, params) => const OfferPlannerWidget(),
         ),
         FFRoute(
           name: CartWidget.routeName,
