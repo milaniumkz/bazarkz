@@ -345,7 +345,7 @@ class _PodSaleWidgetState extends State<PodSaleWidget>
                                                             CrossAxisAlignment
                                                                 .stretch,
                                                         children: [
-                                                          Expanded(
+                                                          SizedBox(
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsetsDirectional
