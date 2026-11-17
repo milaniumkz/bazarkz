@@ -1,3 +1,4 @@
+import '/components/catalog_photo.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/components/navbar/navbar_widget.dart';
@@ -285,16 +286,12 @@ class _OrderWidgetState extends State<OrderWidget> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         8.0),
-                                                            child:
-                                                                Image.network(
-                                                              containerTovariRecord
-                                                                  .image
-                                                                  .firstOrNull!,
-                                                              width: 40.0,
-                                                              height: 40.0,
-                                                              fit: BoxFit
-                                                                  .contain,
-                                                            ),
+                                                            child: CatalogPhoto(
+                                                                containerTovariRecord
+                                                                    .image
+                                                                    .firstOrNull,
+                                                                width: 40.0,
+                                                                height: 40.0),
                                                           ),
                                                         ],
                                                       ),

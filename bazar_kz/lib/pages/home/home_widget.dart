@@ -8,13 +8,10 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
 import '/pages/offer_planner/offer_planner_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:octo_image/octo_image.dart';
 import 'package:text_search/text_search.dart';
 import 'home_model.dart';
 export 'home_model.dart';
@@ -402,24 +399,13 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
-                                                  child: OctoImage(
-                                                    placeholderBuilder: (_) =>
-                                                        SizedBox.expand(
-                                                      child: Image(
-                                                        image: BlurHashImage(
-                                                            listViewKatRecord
-                                                                .blu),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                    image:
-                                                        CachedNetworkImageProvider(
-                                                      listViewKatRecord.image,
-                                                    ),
-                                                    width: 80.0,
-                                                    height: 80.0,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                                  child: const SizedBox(
+                                                      width: 80,
+                                                      height: 80,
+                                                      child: Icon(
+                                                          Icons
+                                                              .category_outlined,
+                                                          size: 36)),
                                                 ),
                                                 Align(
                                                   alignment:

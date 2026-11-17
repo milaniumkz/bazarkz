@@ -1,3 +1,4 @@
+import '/components/catalog_photo.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -98,12 +99,9 @@ class _AkciiWidgetState extends State<AkciiWidget> {
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(0.0),
-                        child: Image.network(
-                          widget.image!,
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          height: MediaQuery.sizeOf(context).width * 0.9,
-                          fit: BoxFit.fill,
-                        ),
+                        child: CatalogPhoto(widget.image,
+                            width: MediaQuery.sizeOf(context).width * 1.0,
+                            height: 200.0),
                       ),
                     ),
                     Align(

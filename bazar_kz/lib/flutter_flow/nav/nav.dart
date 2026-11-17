@@ -10,6 +10,7 @@ import '/auth/base_auth_user_provider.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 import '/index.dart';
+import '/pages/guest_catalog/guest_catalog.dart';
 import '/pages/offer_planner/offer_planner_widget.dart';
 
 export 'package:go_router/go_router.dart';
@@ -78,13 +79,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? HomeWidget() : SelectLangWidget(),
+          appStateNotifier.loggedIn ? HomeWidget() : const GuestCatalog(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) =>
-              appStateNotifier.loggedIn ? HomeWidget() : SelectLangWidget(),
+              appStateNotifier.loggedIn ? HomeWidget() : const GuestCatalog(),
         ),
         FFRoute(
           name: LoginWidget.routeName,
@@ -94,7 +95,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: HomeWidget.routeName,
           path: HomeWidget.routePath,
-          builder: (context, params) => HomeWidget(),
+          builder: (context, params) =>
+              appStateNotifier.loggedIn ? HomeWidget() : const GuestCatalog(),
         ),
         FFRoute(
           name: SelectLangWidget.routeName,

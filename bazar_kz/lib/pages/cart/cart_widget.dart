@@ -1,3 +1,4 @@
+import '/components/catalog_photo.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/components/counter_widget.dart';
@@ -228,16 +229,12 @@ class _CartWidgetState extends State<CartWidget> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         8.0),
-                                                            child:
-                                                                Image.network(
-                                                              cardTovariRecord
-                                                                  .image
-                                                                  .firstOrNull!,
-                                                              width: 100.0,
-                                                              height: 100.0,
-                                                              fit: BoxFit
-                                                                  .contain,
-                                                            ),
+                                                            child: CatalogPhoto(
+                                                                cardTovariRecord
+                                                                    .image
+                                                                    .firstOrNull,
+                                                                width: 100.0,
+                                                                height: 100.0),
                                                           ),
                                                         ],
                                                       ),

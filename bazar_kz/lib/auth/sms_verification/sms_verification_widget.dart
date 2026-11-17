@@ -1,6 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/auth/firebase_auth/phone_sign_in.dart';
 import '/components/legal_links.dart';
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,8 +39,16 @@ class _SmsVerificationWidgetState extends State<SmsVerificationWidget> {
       GoRouter.of(context).prepareAuthEvent();
       final user = await authManager.signInWithJwtToken(context, token);
       if (user == null || !mounted) return;
+      // Wait for the signed-in user's profile; the reactive stream may not
+      // have delivered it yet on a clean install.
+      final account = FirebaseAuth.instance.currentUser;
+      if (account == null) return;
+      final profile = await UsersRecord.collection.doc(account.uid).get();
+      if (!mounted || FirebaseAuth.instance.currentUser?.uid != account.uid)
+        return;
       context.goNamedAuth(
-          currentUserDocument?.displayName.isNotEmpty == true
+          profile.exists &&
+                  UsersRecord.fromSnapshot(profile).displayName.isNotEmpty
               ? HomeWidget.routeName
               : CreateProfileWidget.routeName,
           mounted);

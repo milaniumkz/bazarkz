@@ -1,3 +1,5 @@
+import '/components/catalog_photo.dart';
+import '/auth/select_lang/select_lang_widget.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/components/counter_widget.dart';
@@ -192,12 +194,10 @@ class _PodSaleWidgetState extends State<PodSaleWidget>
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
-                                                  child: Image.network(
-                                                    imagesItem,
-                                                    width: 300.0,
-                                                    height: 200.0,
-                                                    fit: BoxFit.fill,
-                                                  ),
+                                                  child: CatalogPhoto(
+                                                      imagesItem,
+                                                      width: 300.0,
+                                                      height: 200.0),
                                                 );
                                               },
                                               carouselController: _model
@@ -716,13 +716,9 @@ class _PodSaleWidgetState extends State<PodSaleWidget>
                                                                           ClipRRect(
                                                                             borderRadius:
                                                                                 BorderRadius.circular(8.0),
-                                                                            child:
-                                                                                Image.network(
-                                                                              listViewTovariRecord.image.firstOrNull!,
-                                                                              width: 100.0,
-                                                                              height: 100.0,
-                                                                              fit: BoxFit.contain,
-                                                                            ),
+                                                                            child: CatalogPhoto(listViewTovariRecord.image.firstOrNull,
+                                                                                width: 100.0,
+                                                                                height: 100.0),
                                                                           ),
                                                                         ],
                                                                       ),
@@ -802,6 +798,10 @@ class _PodSaleWidgetState extends State<PodSaleWidget>
                                                                               padding: EdgeInsets.all(5.0),
                                                                               child: FFButtonWidget(
                                                                                 onPressed: () async {
+                                                                                  if (currentUserReference == null) {
+                                                                                    context.pushNamed(SelectLangWidget.routeName);
+                                                                                    return;
+                                                                                  }
                                                                                   var cartRecordReference = CartRecord.collection.doc();
                                                                                   await cartRecordReference.set(createCartRecordData(
                                                                                     idTovar: listViewTovariRecord.reference,
